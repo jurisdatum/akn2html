@@ -1,0 +1,37 @@
+
+.fnRef {
+	position: relative;
+	top: -0.5em;
+	font-size: .75rem
+}
+
+.footnotes {
+	margin-top: $spacing * 2;
+	border-top: thin solid black;
+	font-size: smaller
+}
+// .footnotes > .footnote {
+// }
+// .footnotes > .footnote > .marker {
+// 	display: block;
+//     position: absolute;
+// 	// font-size: smaller;
+// 	&:after {
+// 		content: '.'
+// 	}
+// }
+// .footnotes > .footnote > .marker + p {
+// 	text-indent: 3ch
+// }
+
+.footnotes > .footnote > .marker {
+	display: block;
+    position: absolute;
+	// font-size: smaller;
+	&:after {
+		content: '.'
+	}
+}
+.footnote > p {
+	margin-left: $indent
+}

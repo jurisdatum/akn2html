@@ -773,7 +773,11 @@
 
 <xsl:template match="img">
 	<xsl:element name="{ local-name() }">
-		<xsl:apply-templates select="@*|node()" />
+		<xsl:apply-templates select="@*" />
+		<xsl:if test="empty(@alt)">
+			<xsl:attribute name="alt" />
+		</xsl:if>
+		<xsl:apply-templates select="node()" />
 	</xsl:element>
 </xsl:template>
 

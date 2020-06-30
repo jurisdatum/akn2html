@@ -28,14 +28,16 @@ article.asp {
 	> .block {
 		margin-top: $spacing
 	}
+	> .dateOfEnactment {
+		margin-top: 0;
+		text-align: right
+	}
 }
 
-// .ukpga .dateOfEnactment, .ukpga .dateOfEnactment {
-// 	text-align: right
-// }
-
-
-.asp .dateOfEnactment, .asp .DateOfEnactment {
+.asp .dateOfEnactment,
+.asp .DateOfEnactment {
+	margin-top: $spacing;
+	text-align: left;
 	font-weight: bold
 }
 
@@ -70,4 +72,3 @@ article.asp {
 		margin-left: -$indent
 	}
 }
-

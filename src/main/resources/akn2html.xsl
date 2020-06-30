@@ -841,8 +841,8 @@
 
 <xsl:template match="html:th | html:td | html:col">
 	<xsl:element name="{ local-name() }">
-		<xsl:apply-templates select="@* except (@width, @align, @valign, @fo:*)" />
-		<xsl:if test="exists(@width) or exists(@align) or exists(@valign) or exists(@fo:*)">
+		<xsl:apply-templates select="@* except (@width, @height, @align, @valign, @fo:*)" />
+		<xsl:if test="exists(@width) or exists(@height) or exists(@align) or exists(@valign) or exists(@fo:*)">
 			<xsl:attribute name="style">
 				<xsl:if test="exists(@style)">
 					<xsl:value-of select="@style" />
@@ -852,6 +852,14 @@
 					<xsl:text>width:</xsl:text>
 					<xsl:value-of select="@width"/>
 					<xsl:if test="@width castable as xs:integer">
+						<xsl:text>px</xsl:text>
+					</xsl:if>
+					<xsl:text>;</xsl:text>
+				</xsl:if>
+				<xsl:if test="exists(@height)">
+					<xsl:text>height:</xsl:text>
+					<xsl:value-of select="@height"/>
+					<xsl:if test="@height castable as xs:integer">
 						<xsl:text>px</xsl:text>
 					</xsl:if>
 					<xsl:text>;</xsl:text>

@@ -705,8 +705,35 @@
 
 <xsl:template match="quotedStructure | embeddedStructure">
 	<xsl:param name="indent" as="xs:integer" select="1" tunnel="yes" />
+	<xsl:variable name="effective-document-category" as="xs:string">
+		<xsl:choose>
+			<xsl:when test="@ukl:TargetClass">
+				<xsl:sequence select="string(@ukl:TargetClass)" />
+			</xsl:when>
+			<xsl:when test="@ukl:SourceClass">
+				<xsl:sequence select="string(@ukl:SourceClass)" />
+			</xsl:when>
+			<xsl:when test="exists(@uk:docName)">
+				<xsl:sequence select="local:doc-category-from-short-type(string(@uk:docName))" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:sequence select="$doc-category" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
 	<blockquote class="{ local-name() }">
-		<xsl:apply-templates select="@* except (@startQuote, @endQuote)" />
+		<xsl:apply-templates select="@* except (@class, @startQuote, @endQuote)" />
+		<xsl:attribute name="class">
+			<xsl:value-of select="$effective-document-category" />
+			<xsl:if test="exists(@ukl:Context)">
+				<xsl:text> context-</xsl:text>
+				<xsl:value-of select="@ukl:Context" />
+			</xsl:if>
+			<xsl:if test="exists(@class)">
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="@class" />
+			</xsl:if>
+		</xsl:attribute>
 		<xsl:variable name="text-nodes" as="text()*" select="descendant::text()[normalize-space()]" />
 		<xsl:apply-templates>
 			<xsl:with-param name="within-quoted-structure" as="xs:boolean" select="true()" tunnel="yes" />
@@ -716,25 +743,10 @@
 			<xsl:with-param name="last-text-node-of-quote" select="$text-nodes[last()]" tunnel="yes" />
 			<xsl:with-param name="append-text" select="following-sibling::*[1][@name=('appendText','AppendText')]" tunnel="yes" />
 			<xsl:with-param name="indent" select="$indent + 1" tunnel="yes" />
-			<xsl:with-param name="effective-document-category" as="xs:string" tunnel="yes">
-				<xsl:choose>
-					<xsl:when test="@ukl:TargetClass">
-						<xsl:sequence select="string(@ukl:TargetClass)" />
-					</xsl:when>
-					<xsl:when test="@ukl:SourceClass">
-						<xsl:sequence select="string(@ukl:SourceClass)" />
-					</xsl:when>
-					<xsl:when test="exists(@uk:docName)">
-						<xsl:sequence select="local:doc-category-from-short-type(string(@uk:docName))" />
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:sequence select="$doc-category" />
-					</xsl:otherwise>
-				</xsl:choose>
-			</xsl:with-param>
+			<xsl:with-param name="effective-document-category" as="xs:string" select="$effective-document-category" tunnel="yes" />
 			<xsl:with-param name="within-schedule" as="xs:boolean" tunnel="yes">
 				<xsl:choose>
-					<xsl:when test="@ukl:Context = ('schedule','Schedule')">
+					<xsl:when test="@ukl:Context = 'schedule'">
 						<xsl:sequence select="true()" />
 					</xsl:when>
 					<xsl:otherwise>

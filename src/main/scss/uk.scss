@@ -265,11 +265,12 @@ div.definition { @extend %p3; }
 .schProv1,
 .schedule > .paragraph,
 .schedule > .part > .paragraph,
-blockquote[data-ukl-Context='schedule'] > .paragraph {
+.context-schedule > .paragraph {
 	@extend %p1;
 }
 /* subparagraph should only be used in schedules */
-.schedule .subparagraph {
+.schedule .subparagraph,
+.context-schedule .subparagraph {
 	@extend %p3;	// but really a P2
 }
 
@@ -316,3 +317,15 @@ th:first-child, td:first-child { border-left: none }
 // tr:last-child > th, tr:last-child > td { border-bottom: none }
 // thead + tbody > tr:first-child > th, thead + tbody > tr:first-child > td { border-top: thin solid black }
 
+
+
+blockquote.primary > .subsection {
+	margin-left: $indent;
+}
+
+blockquote.secondary:not(.context-schedule) .paragraph {
+	> h2 {
+		position: absolute;
+		margin-left: 1.25 * -$indent
+	}
+}

@@ -278,7 +278,9 @@ div.definition { @extend %p3; }
 }
 /* subparagraph should only be used in schedules */
 .schedule .subparagraph,
-.context-schedule .subparagraph {
+.context-schedule .subparagraph,
+.schProv2
+{
 	@extend %p3;	// but really a P2
 }
 

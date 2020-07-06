@@ -22,7 +22,9 @@
 <xsl:include href="annotations.xsl" />
 
 <xsl:output method="html" version="5" include-content-type="no" encoding="utf-8" indent="yes" />
+
 <xsl:strip-space elements="*" />
+<xsl:preserve-space elements="block p docTitle docNumber docDate num heading subheading ref def term abbr date inline b i u sup sub span a mod quotedText ins" />
 
 <xsl:template match="/">
 	<xsl:choose>
@@ -725,10 +727,15 @@
 		<xsl:apply-templates select="@* except (@class, @startQuote, @endQuote)" />
 		<xsl:attribute name="class">
 			<xsl:value-of select="$effective-document-category" />
-			<xsl:if test="exists(@ukl:Context)">
-				<xsl:text> context-</xsl:text>
-				<xsl:value-of select="@ukl:Context" />
-			</xsl:if>
+			<xsl:choose>
+				<xsl:when test="exists(@ukl:Context)">
+					<xsl:text> context-</xsl:text>
+					<xsl:value-of select="@ukl:Context" />
+				</xsl:when>
+				<xsl:when test="exists(descendant::*[@class = ('schProv1', 'schProv2')])">
+					<xsl:text> context-schedule</xsl:text>
+				</xsl:when>
+			</xsl:choose>
 			<xsl:if test="exists(@class)">
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="@class" />

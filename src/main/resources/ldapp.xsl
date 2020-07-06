@@ -10,7 +10,9 @@
 
 <xsl:function name="ldapp:is-ldapp" as="xs:boolean">
 	<xsl:param name="doc" as="document-node()" />
-	<xsl:sequence select="$doc/akomaNtoso/*/meta/identification/@source = '#ldapp'" />
+	<xsl:variable name="identification-source" as="xs:boolean" select="$doc/akomaNtoso/*/meta/identification/@source = '#ldapp'" />
+	<xsl:variable name="system-showas" as="xs:boolean" select="$doc/akomaNtoso/*/meta/references/TLCConcept[@eId='varSystem']/@showAs = 'LDAPP'" />
+	<xsl:sequence select="$identification-source or $system-showas" />
 </xsl:function>
 
 <xsl:key name="ldapp:tlc" match="TLCConcept | TLCProcess | TLCPerson | TLCOrganization | TLCLocation" use="@eId" />

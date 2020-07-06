@@ -3,6 +3,7 @@ package com.jurisdatum.tna.akn2html;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Optional;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
@@ -50,16 +51,20 @@ public class Akn2Html {
 		return this;
 	}
 	
-	public void transform(InputStream akn, OutputStream html) throws SaxonApiException {
+	public void transform(InputStream akn, OutputStream html, Optional<Boolean> ldapp) throws SaxonApiException {
 		XsltTransformer transform = executable.load();
 		if (cssPath != null)
 			transform.setParameter(new QName("css-path"), new XdmAtomicValue(cssPath));
-//		transform.setParameter(new QName("ldapp"), new XdmAtomicValue(ldapp));
+		if (ldapp.isPresent())
+			transform.setParameter(new QName("ldapp"), new XdmAtomicValue(ldapp.get()));
 		Source source = new StreamSource(akn);
 		HtmlSerializer destination = new HtmlSerializer(html);
 		transform.setSource(source);
 		transform.setDestination(destination);
 		transform.transform();
+	}
+	public void transform(InputStream akn, OutputStream html) throws SaxonApiException {
+		transform(akn, html, Optional.empty());
 	}
 
 }

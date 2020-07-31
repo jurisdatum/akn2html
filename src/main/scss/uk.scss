@@ -3,10 +3,6 @@
 
 $uk-font-size: 16pt;
 
-html {
-	font-size: $uk-font-size
-}
-
 // .preface {
 // 	> h1 {
 // 		text-align: center;
@@ -20,14 +16,7 @@ html {
 // }
 
 
-%big-level {
-	margin-top: 2 * $spacing;
-	> h2 > * {
-		display: block;
-		margin-top: 0.5 * $spacing;
-		text-align: center
-	}
-}
+
 
 %small-level {
 	margin-top: $spacing

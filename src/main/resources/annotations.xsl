@@ -13,10 +13,7 @@
 <xsl:key name="commentaries" match="otherAnalysis/uk:commentary" use="substring(@href, 2)" />
 
 <xsl:template name="annotations">
-
-	<xsl:param name="big-level" as="xs:boolean" select="false()" />
 	<xsl:param name="within-quoted-structure" as="xs:boolean" select="false()" tunnel="yes" />
-	
 	<xsl:if test="not($within-quoted-structure)">
 		<xsl:variable name="commentary-refs" as="element(uk:commentary)*" select="key('commentaries', @eId)" />
 		<xsl:if test="exists($commentary-refs)">

@@ -7,7 +7,8 @@
 @import 'changes.scss';
 
 body {
-	margin: 1cm 1in
+	margin: 1cm 1in;
+	font-size: $core-font-size
 }
 
 h1 {
@@ -27,6 +28,15 @@ h2, h3, h4, h5, h6 {
 	font-size: inherit
 }
 
+%big-level {
+	margin-top: 2 * $spacing;
+	> h2 > * {
+		display: block;
+		margin-top: 0.5 * $spacing;
+		text-align: center
+	}
+}
+
 p, .p {
 	margin-top: $spacing;
 	margin-bottom: 0
@@ -35,6 +45,10 @@ p, .p {
 // lists
 
 $list-indent: 2em;
+
+blockquote > ol, blockquote > ul {
+	margin-left: 0;
+}
 
 ol, ul {
 	position: relative;
@@ -49,10 +63,10 @@ li {
 li > .num {
 	display: inline-block;
 	position: absolute;
-	left: 0
+	left: -0.25 * $list-indent
 }
 li > .num + p {
-	display: inline
+	// display: inline
 }
 li > ol, li > ul {
 	margin-left: 0
@@ -87,6 +101,10 @@ img {
 // inline
 
 .uppercase { text-transform: uppercase }
+
+.strike {  }
+
+.expanded {  }
 
 // .noteRef {
 //     display: inline-block;

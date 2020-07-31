@@ -72,13 +72,13 @@
 <xsl:template name="add-class-attribute">
 	<xsl:param name="classes" as="xs:string*" select="()" />
 	<xsl:variable name="classes" as="xs:string*">
-		<xsl:sequence select="$classes" />
-		<xsl:if test="not(self::p)">
-			<xsl:sequence select="local-name()" />
+		<xsl:if test="empty(self::p)">
+			<xsl:sequence select="local-name(.)" />
 		</xsl:if>
 		<xsl:sequence select="@name" />
 		<xsl:sequence select="@uk:name" />
 		<xsl:sequence select="@class" />
+		<xsl:sequence select="$classes" />
 	</xsl:variable>
 	<xsl:if test="exists($classes)">
 		<xsl:attribute name="class">
@@ -360,6 +360,10 @@
 	<xsl:call-template name="big-level" />
 </xsl:template>
 
+<xsl:template match="title">	<!-- for EU Titles -->
+	<xsl:call-template name="big-level" />
+</xsl:template>
+
 <xsl:template match="part">
 	<xsl:call-template name="big-level" />
 </xsl:template>
@@ -457,8 +461,10 @@
 	<xsl:call-template name="p3" />
 </xsl:template>
 
-<xsl:template match="hcontainer">	<!-- ??? -->
-	<xsl:call-template name="p3" />
+<xsl:template match="hcontainer">	<!-- e.g., division -->
+	<xsl:call-template name="p3">
+		<xsl:with-param name="class" select="if (empty(num)) then 'no-num' else ()" />
+	</xsl:call-template>
 </xsl:template>
 
 
@@ -473,6 +479,7 @@
 			</h2>
 		</xsl:if>
 		<xsl:apply-templates select="*[not(self::num) and not(self::heading) and not(self::subheading)]" />
+		<xsl:call-template name="annotations" />
 	</section>
 </xsl:template>
 
@@ -511,13 +518,18 @@
 <!-- P3 -->
 
 <xsl:template name="p3">
+	<xsl:param name="class" as="xs:string?" select="()" />
 	<xsl:param name="indent" as="xs:integer" select="3" tunnel="yes" />
 	<xsl:param name="plevel" as="xs:integer" select="3" tunnel="no" />
 	<div>
-		<xsl:call-template name="attrs" />
-		<xsl:element name="h{$plevel}">
-			<xsl:apply-templates select="num | heading | subheading" />			
-		</xsl:element>
+		<xsl:call-template name="attrs">
+			<xsl:with-param name="classes" select="$class" />
+		</xsl:call-template>
+		<xsl:if test="num | heading | subheading">	<!-- needed b/c this template is now used as default for hcontainer -->
+			<xsl:element name="h{$plevel}">
+				<xsl:apply-templates select="num | heading | subheading" />			
+			</xsl:element>
+		</xsl:if>
 		<xsl:apply-templates select="*[not(self::num) and not(self::heading) and not(self::subheading)]">
 			<xsl:with-param name="indent" select="$indent + 1" tunnel="yes" />
 			<xsl:with-param name="plevel" select="$plevel + 1" tunnel="no" />
@@ -766,6 +778,41 @@
 </xsl:template>
 
 <xsl:template match="inline[@name=('appendText','AppendText')]" />
+
+
+<!-- attachments -->
+
+<xsl:template match="hcontainer[@name='attachments']">
+	<div>
+		<xsl:call-template name="attrs" />
+		<xsl:apply-templates />
+	</div>
+</xsl:template>
+
+<xsl:template match="hcontainer[@name='attachment']">
+	<div>
+		<xsl:call-template name="attrs" />
+		<xsl:apply-templates mode="attachment" />
+	</div>
+</xsl:template>
+
+<xsl:template match="content | p" mode="attachment">
+	<xsl:apply-templates mode="attachment" />
+</xsl:template>
+
+<xsl:template match="subFlow" mode="attachment">
+	<div>
+		<xsl:call-template name="attrs" />
+		<xsl:apply-templates />
+	</div>
+</xsl:template>
+
+<xsl:template match="subFlow/hcontainer[@name='body']">
+	<div>
+		<xsl:call-template name="attrs" />
+		<xsl:apply-templates />
+	</div>
+</xsl:template>
 
 
 <!-- tables of contents -->

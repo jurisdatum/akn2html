@@ -1010,7 +1010,7 @@
 <xsl:template match="noteRef">
 	<xsl:choose>
 		<xsl:when test="@uk:name = 'commentary' or tokenize(@class, ' ') = 'commentary'">
-			<xsl:variable name="commentary" as="element(note)" select="key('id', substring(@href, 2))" />
+			<xsl:variable name="commentary" as="element(note)?" select="key('id', substring(@href, 2))" />
 			<span>
 				<xsl:call-template name="add-class-attribute" />
 				<xsl:apply-templates select="@* except (@href, @class)" />

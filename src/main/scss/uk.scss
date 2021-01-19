@@ -241,7 +241,11 @@ div.definition { @extend %p3; }
 	> h2 {
 		.num {
 			font-size: larger;
-			text-transform: uppercase;
+			text-transform: uppercase
+		}
+		.heading {
+			font-variant: normal;
+			font-style: italic
 		}
 	}
 }

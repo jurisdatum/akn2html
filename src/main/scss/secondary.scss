@@ -184,8 +184,12 @@ blockquote > .para2
 .signatureBlock > .content > .signature {
 	font-style: italic
 }
+.signatureBlock > .content > .address > * {
+	margin-top: 0;
+    text-align: left
+}
 .signatureBlock > .content > .date {
-    position: absolute;
+    // position: absolute;
     text-align: left;
 }
 

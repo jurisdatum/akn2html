@@ -92,7 +92,7 @@
 <xsl:template name="add-extent-attribute">
 	<xsl:if test="exists(self::act) or exists(@eId)">
 		<xsl:variable name="id" as="xs:string?" select="@eId" />
-		<xsl:variable name="restriction" as="element()?" select="key('extent-restrictions', $id)" />
+		<xsl:variable name="restriction" as="element()?" select="key('extent-restrictions', $id)[1]" />	<!-- [1] protects against duplicate ids -->
 		<xsl:if test="exists($restriction)">
 			<xsl:variable name="extent" as="element(TLCLocation)" select="key('id', substring($restriction/@refersTo, 2))" />
 			<xsl:attribute name="data-x-extent">
@@ -107,7 +107,7 @@
 <xsl:template name="add-restrict-date-attributes">
 	<xsl:if test="exists(self::act) or exists(@eId)">
 		<xsl:variable name="id" as="xs:string?" select="@eId" />
-		<xsl:variable name="restriction" as="element()?" select="key('temporal-restrictions', $id)" />
+		<xsl:variable name="restriction" as="element()?" select="key('temporal-restrictions', $id)[1]" />	<!-- [1] protects against duplicate ids -->
 		<xsl:if test="exists($restriction)">
 			<xsl:variable name="group" as="element(temporalGroup)" select="key('id', substring($restriction/@refersTo, 2))" />
 			<xsl:variable name="interval" as="element(timeInterval)" select="$group/*" />
@@ -140,7 +140,7 @@
 <xsl:template name="add-confers-power-attribute">
 	<xsl:if test="exists(self::act) or exists(@eId)">
 		<xsl:variable name="id" as="xs:string?" select="@eId" />
-		<xsl:variable name="restriction" as="element(uk:confersPower)?" select="key('confers-power', $id)" />
+		<xsl:variable name="restriction" as="element(uk:confersPower)?" select="key('confers-power', $id)[1]" />	<!-- [1] guards against duplicate ids -->
 		<xsl:if test="exists($restriction)">
 			<xsl:attribute name="data-x-confers-power">
 				<xsl:text>true</xsl:text>
@@ -478,6 +478,7 @@
 				<xsl:apply-templates select="num | heading | subheading" />
 			</h2>
 		</xsl:if>
+		<xsl:apply-templates select="num/authorialNote[@class='referenceNote']" />	<!-- for schedule -->
 		<xsl:apply-templates select="*[not(self::num) and not(self::heading) and not(self::subheading)]" />
 		<xsl:call-template name="annotations" />
 	</section>
@@ -563,7 +564,7 @@
 <xsl:template match="hcontainer[@name='schedule']/num | hcontainer[@name='schedule']/part/num">
 	<span>
 		<xsl:call-template name="attrs" />
-		<xsl:apply-templates select="node()[not(self::authorialNote)]" />
+		<xsl:apply-templates select="node()[not(self::authorialNote[@class='referenceNote'])]" />
 	</span>
 </xsl:template>
 
@@ -854,7 +855,7 @@
 </xsl:template>
 
 
-<!-- foreign -->
+<!-- foreign: tables and math -->
 
 <xsl:template match="foreign">
 	<xsl:apply-templates />
@@ -995,6 +996,16 @@
 </xsl:template>
 
 
+<!-- forms -->
+
+<xsl:template match="tblock[@class='form']/num">
+	<span>
+		<xsl:call-template name="attrs" />
+		<xsl:apply-templates select="node()[not(self::authorialNote[@class='referenceNote'])]" />
+	</span>
+	<xsl:apply-templates select="authorialNote[@class='referenceNote']" />
+</xsl:template>
+
 
 <!-- inline -->
 
@@ -1010,6 +1021,12 @@
 <xsl:template match="noteRef">
 	<xsl:choose>
 		<xsl:when test="@uk:name = 'commentary' or tokenize(@class, ' ') = 'commentary'">
+			<xsl:variable name="test" select="key('id', substring(@href, 2))" />
+			<xsl:if test="$test[not(self::note)]">
+				<xsl:message terminate="yes">
+					<xsl:sequence select="." />
+				</xsl:message>
+			</xsl:if>
 			<xsl:variable name="commentary" as="element(note)?" select="key('id', substring(@href, 2))" />
 			<span>
 				<xsl:call-template name="add-class-attribute" />
@@ -1191,7 +1208,12 @@
 	<xsl:if test="exists($start-quote-attr) and . is $first-text-node-of-quote">
 		<xsl:value-of select="$start-quote-attr" />
 	</xsl:if>
-	<xsl:value-of select="." />
+	<xsl:variable name="value" as="xs:string" select="string(.)" />
+	<xsl:variable name="value" as="xs:string" select="replace($value, '&#132;', '&#8222;')" />
+	<xsl:variable name="value" as="xs:string" select="replace($value, '&#150;', '')" />	<!-- ukpga/2014/25/enacted -->
+	<xsl:variable name="value" as="xs:string" select="replace($value, '&#157;', '')" />
+	<xsl:value-of select="$value" />
+	<!-- <xsl:value-of select="translate(., '&#157;', '')" /> -->
 	<xsl:if test=". is $last-text-node-of-quote">
 		<xsl:value-of select="$end-quote-attr" />
 		<xsl:apply-templates select="$append-text/node()" />

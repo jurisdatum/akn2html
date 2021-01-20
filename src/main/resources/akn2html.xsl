@@ -555,6 +555,18 @@
 
 <!-- schedules and explanatory notes -->
 
+<xsl:template match="hcontainer[@name='schedules']">
+	<section>
+		<xsl:call-template name="attrs" />
+		<xsl:if test="exists(num | heading | subheading)">
+			<h2>
+				<xsl:apply-templates select="num | heading | subheading" />
+			</h2>
+		</xsl:if>
+		<xsl:apply-templates select="*[not(self::num) and not(self::heading) and not(self::subheading)]" />
+	</section>
+</xsl:template>
+
 <xsl:template match="hcontainer[@name='schedule']">
 	<xsl:call-template name="big-level">
 		<xsl:with-param name="within-schedule" select="true()" tunnel="yes" />
@@ -1192,6 +1204,17 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</a>
+		<xsl:apply-templates />
+	</div>
+</xsl:template>
+
+<!-- margin notes -->
+
+<xsl:template match="authorialNote[@placement='side']">
+	<div>
+		<xsl:call-template name="attrs">
+			<xsl:with-param name="classes" select="'marginalNote'" />
+		</xsl:call-template>
 		<xsl:apply-templates />
 	</div>
 </xsl:template>

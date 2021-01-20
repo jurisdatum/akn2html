@@ -72,3 +72,33 @@ article.asp {
 		margin-left: -$indent
 	}
 }
+
+.schedule {
+	> h2 {
+		.heading {
+
+		}
+	}
+}
+
+
+/* amendments */
+
+
+blockquote .article {
+	@extend %compact-p1;
+}
+
+blockquote .article > .paragraph {
+	@extend %compact-p2;
+	> .para1 {
+		margin-left: 2 * $indent; /* parent is inline, so its margin is ineffective (or maybe it's just not set) */
+	}
+}
+blockquote .article > .paragraph:first-of-type {
+	@extend %inline-p2;
+}
+
+blockquote.secondary .paragraph {
+	@extend %compact-p2;
+}

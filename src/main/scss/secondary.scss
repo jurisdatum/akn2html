@@ -82,30 +82,7 @@ body {
 
 /* P1 */
 .article, .regulation, .rule {
-	// margin-top: 2 * $spacing;
-	> h2 {
-		display: inline;
-	}
-	> h2 > .heading {
-		display: block;
-		margin-top: 2 * $spacing;
-		font-weight: bold;
-		margin-bottom: $spacing
-	}
-	> h2 > .num {
-		padding-left: 1em;
-		font-weight: bold
-	}
-	// > h2 > .num::after {
-	// 	font-weight: normal;
-	// 	content: '\2014'
-	// }
-	> .intro, > .content {
-		display: inline;
-		> p:first-child, .p:first-child {
-			display: inline;
-		}
-	}
+	@extend %compact-p1;
 }
 
 /* P2 */
@@ -195,6 +172,15 @@ blockquote > .para2
 
 
 /* schedules */
+
+.schedule {
+	> h2 {
+		.heading {
+			// font-variant: normal;
+			font-style: italic
+		}
+	}
+}
 
 .schProv1,
 .schedule > .paragraph,

@@ -129,7 +129,7 @@ $uk-font-size: 16pt;
 
 .part,
 .chapter {
-	@extend %big-level
+	@extend %big-level;
 }
 
 
@@ -146,6 +146,63 @@ section.subheading {
 section.subheading:first-of-type {
 	margin-top: $spacing;	// no double spacing when following part heading
 }
+
+/* compact format */
+
+%compact-p1 {
+	// margin-top: 2 * $spacing;
+	> h2 {
+		display: inline;
+	}
+	> h2 > .heading {
+		display: block;
+		margin-top: 2 * $spacing;
+		font-weight: bold;
+		margin-bottom: $spacing
+	}
+	> h2 > .num {
+		padding-left: 1em;
+		font-weight: bold
+	}
+	> .intro, > .content {
+		display: inline;
+		> p:first-child, .p:first-child {
+			display: inline;
+		}
+	}
+}
+
+%compact-p2 {
+	> h2 {
+		display: inline;
+	}
+	> .intro {
+		display: inline;
+		> *:first-child {
+			display: inline;
+		}
+	}
+	> .content {
+		display: inline;
+		> *:first-child {
+			display: inline;
+		}
+	}
+}
+
+%inline-p2 {
+	@extend %compact-p2;
+	display: inline;
+	> h2 {
+		> .num {
+			padding-left: 0 !important;
+		}
+		> .num::before {
+			content: '\2014'
+		}
+	}
+}
+
 
 .level, .para1, .para2, .para3, .para4 {
 	margin-top: $spacing;
@@ -234,6 +291,16 @@ div.definition { @extend %p3; }
 
 .schedules {
 	margin-top: 4 * $spacing;
+	> h2 > * {
+		display: block;
+		margin-top: 0.5 * $spacing;
+		text-align: center
+	}
+	> h2 > .heading {
+		font-size: larger;
+		text-transform: uppercase;
+		letter-spacing: 0.5ch;
+	}
 }
 
 .schedule {
@@ -242,10 +309,6 @@ div.definition { @extend %p3; }
 		.num {
 			font-size: larger;
 			text-transform: uppercase
-		}
-		.heading {
-			font-variant: normal;
-			font-style: italic
 		}
 	}
 }

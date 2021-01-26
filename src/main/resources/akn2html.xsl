@@ -580,6 +580,15 @@
 	</span>
 </xsl:template>
 
+<xsl:template match="blockContainer[@class=('explanatoryNote','explanatoryNotes')]">
+	<div>
+		<xsl:call-template name="attrs" />
+		<xsl:if test="empty(heading)">
+			<div class="heading">Explanatory Note</div>
+		</xsl:if>
+		<xsl:apply-templates />
+	</div>
+</xsl:template>
 <xsl:template match="blockContainer[@class=('explanatoryNote','explanatoryNotes','earlierOrders','commencementHistory')]/heading">
 	<div>
 		<xsl:call-template name="attrs" />

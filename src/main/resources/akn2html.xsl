@@ -356,7 +356,7 @@
 
 <!-- hierarchy -->
 
-<xsl:template match="hcontainer[name = 'groupOfParts']">
+<xsl:template match="hcontainer[@name = 'groupOfParts']">
 	<xsl:call-template name="big-level" />
 </xsl:template>
 

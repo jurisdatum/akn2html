@@ -385,13 +385,20 @@ div.definition { @extend %p3; }
 
 /* tables */
 
-th, thead td { border-bottom: thin solid black }
-th, td { border-left: thin solid black }
-// tr:first-child > th, tr:first-child > td { border-top: none }
-th:first-child, td:first-child { border-left: none }
-// th:last-child, td:last-child { border-right: none }
-// tr:last-child > th, tr:last-child > td { border-bottom: none }
-// thead + tbody > tr:first-child > th, thead + tbody > tr:first-child > td { border-top: thin solid black }
+thead th, thead td {
+	font-weight: normal;
+	font-style: italic
+}
+tbody th {
+	font-weight: bold
+}
+
+table.uk-default {
+	th, td { border-left: thin solid black }
+	thead th, thead td { border-bottom: thin solid black }
+	th:first-child, td:first-child { border-left: none }
+}
+
 
 blockquote:not(.secondary) .section {
 	margin-top: $spacing * 1.5;

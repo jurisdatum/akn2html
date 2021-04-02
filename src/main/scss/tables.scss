@@ -48,9 +48,8 @@ table.level-5 {
 th, td {
 	padding: 6pt
 }
-th, thead td {
-	font-weight: normal;
-	font-style: italic;
+th {
+	text-align: left
 }
 td {
 	vertical-align: top

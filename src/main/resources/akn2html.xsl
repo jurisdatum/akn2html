@@ -1217,17 +1217,6 @@
 	</div>
 </xsl:template>
 
-<!-- margin notes -->
-
-<xsl:template match="authorialNote[@placement='side']">
-	<div>
-		<xsl:call-template name="attrs">
-			<xsl:with-param name="classes" select="'marginalNote'" />
-		</xsl:call-template>
-		<xsl:apply-templates />
-	</div>
-</xsl:template>
-
 
 <!-- text nodes -->
 

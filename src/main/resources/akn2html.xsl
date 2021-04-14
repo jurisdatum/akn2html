@@ -528,6 +528,11 @@
 		</xsl:call-template>
 		<xsl:if test="num | heading | subheading">	<!-- needed b/c this template is now used as default for hcontainer -->
 			<xsl:element name="h{$plevel}">
+				<xsl:if test="exists(heading)">
+					<xsl:attribute name="class">
+						<xsl:text>with-heading</xsl:text>
+					</xsl:attribute>
+				</xsl:if>
 				<xsl:apply-templates select="num | heading | subheading" />			
 			</xsl:element>
 		</xsl:if>

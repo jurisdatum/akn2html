@@ -213,25 +213,53 @@ section.subheading:first-of-type {
 	}
 }
 
-
 .level, .para1, .para2, .para3, .para4 {
 	margin-top: $spacing;
 	margin-left: $indent;
-	> h3 {
+}
+.level, .para1, .para2, .para3, .para4 {
+	> h3:not(.with-heading) {
 		position: absolute;
 		margin-left: -$indent
 	}
-	> h4 {
+	> h4:not(.with-heading) {
 		position: absolute;
 		margin-left: -$indent
 	}
-	> h5 {
+	> h5:not(.with-heading) {
 		position: absolute;
 		margin-left: -$indent
 	}
-	> h6 {
+	> h6:not(.with-heading) {
 		position: absolute;
 		margin-left: -$indent
+	}
+}
+/* for P3 with-heading, see uksi/1993/2006/schedule/5/paragraph/12/made */
+.level, .para1, .para2, .para3, .para4 {
+	> h3.with-heading {
+		> .num {
+			position: absolute;
+			margin-left: -$indent
+		}
+	}
+	> h4.with-heading {
+		> .num {
+			position: absolute;
+			margin-left: -$indent
+		}
+	}
+	> h5.with-heading {
+		> .num {
+			position: absolute;
+			margin-left: -$indent
+		}
+	}
+	> h6.with-heading {
+		> .num {
+			position: absolute;
+			margin-left: -$indent
+		}
 	}
 }
 

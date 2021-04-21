@@ -25,7 +25,7 @@ public class Akn2Html {
 	private static class Importer implements URIResolver {
 		@Override public Source resolve(String href, String base) throws TransformerException {
 			InputStream file = getClass().getResourceAsStream("/" + href);
-			return new StreamSource(file);
+			return new StreamSource(file, href);
 		}
 	}
 
@@ -34,7 +34,7 @@ public class Akn2Html {
 		XsltCompiler compiler = processor.newXsltCompiler();
 		compiler.setURIResolver(new Importer());
 		InputStream file = getClass().getResourceAsStream("/akn2html.xsl");
-		Source source = new StreamSource(file);
+		Source source = new StreamSource(file, "akn2html.xsl");
 		try {
 			executable = compiler.compile(source);
 		} catch (SaxonApiException e) {

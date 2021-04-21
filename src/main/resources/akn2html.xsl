@@ -479,8 +479,9 @@
 			</h2>
 		</xsl:if>
 		<xsl:apply-templates select="num/authorialNote[@class='referenceNote']" />	<!-- for schedule -->
-		<xsl:apply-templates select="*[not(self::num) and not(self::heading) and not(self::subheading)]" />
+		<xsl:apply-templates select="heading/authorialNote[@class='referenceNote']" />
 		<xsl:call-template name="annotations" />
+		<xsl:apply-templates select="*[not(self::num) and not(self::heading) and not(self::subheading)]" />
 	</section>
 </xsl:template>
 

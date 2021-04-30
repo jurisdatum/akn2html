@@ -870,8 +870,9 @@
 </xsl:template>
 
 <xsl:template match="quotedStructure | embeddedStructure">
+	<xsl:param name="effective-document-category" as="xs:string" tunnel="yes" />
 	<xsl:param name="indent" as="xs:integer" select="1" tunnel="yes" />
-	<xsl:variable name="effective-document-category" as="xs:string">
+	<xsl:variable name="new-effective-document-category" as="xs:string">
 		<xsl:choose>
 			<xsl:when test="@ukl:TargetClass">
 				<xsl:sequence select="string(@ukl:TargetClass)" />
@@ -883,14 +884,14 @@
 				<xsl:sequence select="local:doc-category-from-short-type(string(@uk:docName))" />
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:sequence select="$doc-category" />
+				<xsl:sequence select="$effective-document-category" />
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:variable>
 	<blockquote class="{ local-name() }">
 		<xsl:apply-templates select="@* except (@class, @startQuote, @endQuote)" />
 		<xsl:attribute name="class">
-			<xsl:value-of select="$effective-document-category" />
+			<xsl:value-of select="$new-effective-document-category" />
 			<xsl:choose>
 				<xsl:when test="exists(@ukl:Context)">
 					<xsl:text> context-</xsl:text>
@@ -914,7 +915,7 @@
 			<xsl:with-param name="last-text-node-of-quote" select="$text-nodes[last()]" tunnel="yes" />
 			<xsl:with-param name="append-text" select="following-sibling::*[1][@name=('appendText','AppendText')]" tunnel="yes" />
 			<xsl:with-param name="indent" select="$indent + 1" tunnel="yes" />
-			<xsl:with-param name="effective-document-category" as="xs:string" select="$effective-document-category" tunnel="yes" />
+			<xsl:with-param name="effective-document-category" as="xs:string" select="$new-effective-document-category" tunnel="yes" />
 			<xsl:with-param name="within-schedule" as="xs:boolean" tunnel="yes">
 				<xsl:choose>
 					<xsl:when test="@ukl:Context = 'schedule'">

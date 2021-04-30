@@ -356,6 +356,36 @@
 
 <!-- hierarchy -->
 
+<xsl:function name="local:is-big-level" as="xs:boolean">
+	<xsl:param name="e" as="element()" />
+	<xsl:choose>
+		<xsl:when test="exists($e/self::hcontainer[@name='groupOfParts'])">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::title)">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::part)">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::chapter)">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::hcontainer[@name='crossheading'])">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::hcontainer[@name='subheading'])">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::hcontainer[@name='P1group'])">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:sequence select="false()" />
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:function>
+
 <xsl:template match="hcontainer[@name = 'groupOfParts']">
 	<xsl:call-template name="big-level" />
 </xsl:template>
@@ -488,6 +518,31 @@
 
 <!-- P1 -->
 
+<xsl:function name="local:is-p1" as="xs:boolean">
+	<xsl:param name="e" as="element()" />
+	<xsl:param name="effective-document-category" as="xs:string" />
+	<xsl:choose>
+		<xsl:when test="exists($e/self::section) and $effective-document-category = 'primary'">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::article)">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::hcontainer[@name='regulation'])">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::rule)">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:when test="exists($e/self::paragraph)">
+			<xsl:sequence select="true()" />
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:sequence select="false()" />
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:function>
+
 <xsl:template name="p1">
 	<section>
 		<xsl:call-template name="attrs" />
@@ -544,11 +599,80 @@
 	</div>
 </xsl:template>
 
-<xsl:template match="num | heading | subheading">
+<xsl:template match="num">
+	<xsl:param name="effective-document-category" as="xs:string" tunnel="yes" />
+	<span>
+		<xsl:call-template name="attrs" />
+		<xsl:if test="local:is-big-level(..) or exists(parent::hcontainer[@name='schedule'])">
+			<xsl:call-template name="show-extent">
+				<xsl:with-param name="anchor" select=".." />
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:apply-templates />
+	</span>
+</xsl:template>
+
+<xsl:template match="heading">
+	<xsl:param name="effective-document-category" as="xs:string" tunnel="yes" />
+	<span>
+		<xsl:call-template name="attrs" />
+		<xsl:if test="local:is-p1(.., $effective-document-category) or (local:is-big-level(..) and empty(preceding-sibling::*))">
+			<xsl:call-template name="show-extent">
+				<xsl:with-param name="anchor" select=".." />
+			</xsl:call-template>
+		</xsl:if>
+		<xsl:apply-templates />
+	</span>
+</xsl:template>
+
+<xsl:template match="subheading">
 	<span>
 		<xsl:call-template name="attrs" />
 		<xsl:apply-templates />
 	</span>
+</xsl:template>
+
+<xsl:key name="extent-restrictions" match="restriction[starts-with(@refersTo, '#extent-')]" use="substring(@href, 2)" />
+
+<xsl:key name="alternatives" match="*[exists(@alternativeTo)]" use="@alternativeTo" />
+
+<xsl:function name="local:get-extent" as="xs:string?">
+	<xsl:param name="e" as="element()" />
+	<xsl:variable name="restriction" as="element(restriction)?" select="key('extent-restrictions', $e/@eId, root($e))" />
+	<xsl:if test="exists($restriction)">
+		<xsl:variable name="extent" as="element(TLCLocation)?" select="key('id', substring($restriction/@refersTo, 2), root($e	))" />
+		<xsl:sequence select="$extent/@showAs" />
+	</xsl:if>
+</xsl:function>
+
+<xsl:template name="show-extent">
+	<xsl:param name="anchor" as="element()" select="." />
+	<xsl:variable name="extent" as="xs:string?" select="local:get-extent($anchor)" />
+	<xsl:variable name="other-extents" as="xs:string*">
+		<xsl:choose>
+			<xsl:when test="exists($anchor/@alternativeTo)">
+				<xsl:variable name="main-id" as="xs:string?" select="$anchor/@alternativeTo" />
+				<xsl:variable name="others" as="element()*" select="key('id', $main-id)" />
+				<xsl:sequence select="$others/local:get-extent(.)" />
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:variable name="alternatives" as="element()*" select="key('alternatives', $anchor/@eId)" />
+				<xsl:sequence select="$alternatives/local:get-extent(.)" />
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:variable>
+	<xsl:if test="exists($extent) and exists($other-extents) and not($extent = $other-extents)">
+		<xsl:attribute name="data-show-extent">
+			<xsl:choose>
+				<xsl:when test="$extent = 'E+W+S+N.I.'">
+					<xsl:text>U.K.</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="$extent" />
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:attribute>
+	</xsl:if>
 </xsl:template>
 
 <xsl:template match="intro | content | wrapUp">

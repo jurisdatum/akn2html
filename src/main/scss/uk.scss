@@ -130,6 +130,15 @@ $uk-font-size: 16pt;
 	}
 }
 
+*[data-show-extent]::after {
+	margin-left: 2em;
+	background-color: darkMagenta;
+	color: white;
+	padding: 2pt 6pt;
+	font-weight: normal;
+	content: attr(data-show-extent);
+}
+
 
 /* parts, chapters */
 

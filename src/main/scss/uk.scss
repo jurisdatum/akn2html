@@ -226,48 +226,48 @@ section.subheading:first-of-type {
 	margin-top: $spacing;
 	margin-left: $indent;
 }
+
+%right-aligned-number {
+	position: absolute;
+	margin-left: -2 * $indent;
+	width: 2 * $indent - 1em;
+	text-align: right;
+}
+
 .level, .para1, .para2, .para3, .para4 {
 	> h3:not(.with-heading) {
-		position: absolute;
-		margin-left: -$indent
+		@extend %right-aligned-number;
 	}
 	> h4:not(.with-heading) {
-		position: absolute;
-		margin-left: -$indent
+		@extend %right-aligned-number;
 	}
 	> h5:not(.with-heading) {
-		position: absolute;
-		margin-left: -$indent
+		@extend %right-aligned-number;
 	}
 	> h6:not(.with-heading) {
-		position: absolute;
-		margin-left: -$indent
+		@extend %right-aligned-number;
 	}
 }
 /* for P3 with-heading, see uksi/1993/2006/schedule/5/paragraph/12/made */
 .level, .para1, .para2, .para3, .para4 {
 	> h3.with-heading {
 		> .num {
-			position: absolute;
-			margin-left: -$indent
+			@extend %right-aligned-number;
 		}
 	}
 	> h4.with-heading {
 		> .num {
-			position: absolute;
-			margin-left: -$indent
+			@extend %right-aligned-number;
 		}
 	}
 	> h5.with-heading {
 		> .num {
-			position: absolute;
-			margin-left: -$indent
+			@extend %right-aligned-number;
 		}
 	}
 	> h6.with-heading {
 		> .num {
-			position: absolute;
-			margin-left: -$indent
+			@extend %right-aligned-number;
 		}
 	}
 }
@@ -453,8 +453,7 @@ blockquote:not(.secondary) .section {
 blockquote:not(.secondary) .subsection {
 	margin-left: $indent;
 	> h2 {
-		position: absolute;
-		margin-left: -$indent
+		@extend %right-aligned-number;
 	}
 }
 

@@ -68,8 +68,7 @@ article.asp {
 
 .subsection {
 	> h2 {
-		position: absolute;
-		margin-left: -$indent
+		@extend %right-aligned-number;
 	}
 }
 

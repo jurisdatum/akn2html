@@ -67,7 +67,7 @@
 	</xsl:choose>
 </xsl:function>
 
-<xsl:variable name="doc-category" as="xs:string?" select="local:doc-category-from-short-type($doc-short-type)" />
+<xsl:variable name="doc-category" as="xs:string" select="local:doc-category-from-short-type($doc-short-type)" />
 
 <xsl:template name="add-class-attribute">
 	<xsl:param name="classes" as="xs:string*" select="()" />
@@ -600,7 +600,6 @@
 </xsl:template>
 
 <xsl:template match="num">
-	<xsl:param name="effective-document-category" as="xs:string" tunnel="yes" />
 	<span>
 		<xsl:call-template name="attrs" />
 		<xsl:if test="local:is-big-level(..) or exists(parent::hcontainer[@name='schedule'])">
@@ -1345,6 +1344,9 @@
 			</xsl:choose>
 		</a>
 		<xsl:apply-templates />
+		<xsl:apply-templates>
+			<xsl:with-param name="effective-document-category" select="$doc-category" tunnel="yes" />
+		</xsl:apply-templates>
 	</div>
 </xsl:template>
 

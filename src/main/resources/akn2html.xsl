@@ -842,7 +842,7 @@
 	</figcaption>
 </xsl:template>
 
-<xsl:template match="block | container | tblock | blockContainer | formula | longTitle | authorialNote | signatures | signature">
+<xsl:template match="block | container | tblock | blockContainer | formula | longTitle | authorialNote">
 	<div>
 		<xsl:call-template name="attrs" />
 		<xsl:apply-templates />

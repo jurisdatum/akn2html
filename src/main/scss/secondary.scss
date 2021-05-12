@@ -210,22 +210,6 @@ blockquote[data-ukl-Context='schedule'] > .paragraph {
 	}
 }
 
-// .explanatoryNotes, .earlierOrders {
-// 	margin-top: $spacing * 2;
-// 	> .heading {
-// 		display: block;
-// 		text-align: center;
-// 		font-weight: bold
-// 	}
-// 	> .comment {
-// 		text-align: center;
-// 		font-style: italic
-// 	}
-// 	> * > .heading {
-// 		font-weight: bold
-// 	}
-// }
-
 .blockContainer.para1, .tblock.para1 {
 	margin-left: 2 * $indent;
 	> .num {
@@ -235,6 +219,14 @@ blockquote[data-ukl-Context='schedule'] > .paragraph {
 }
 .blockContainer.para2, .blockContainer.para3, .blockContainer.para4,
 .tblock.para2, .tblock.para3, .tblock.para4 {
+	margin-left: $indent;
+	> .num {
+		position: absolute;
+		margin-left: -$indent
+	}
+}
+
+.blockContainer[data-ukl-name='P1'] {
 	margin-left: $indent;
 	> .num {
 		position: absolute;

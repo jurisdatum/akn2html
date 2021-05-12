@@ -10,28 +10,27 @@
 	border-top: thin solid black;
 	font-size: smaller
 }
-// .footnotes > .footnote {
-// }
-// .footnotes > .footnote > .marker {
-// 	display: block;
-//     position: absolute;
-// 	// font-size: smaller;
-// 	&:after {
-// 		content: '.'
-// 	}
-// }
-// .footnotes > .footnote > .marker + p {
-// 	text-indent: 3ch
-// }
 
 .footnotes > .footnote > .marker {
 	display: block;
     position: absolute;
-	// font-size: smaller;
 	&:after {
 		content: '.'
 	}
 }
 .footnote > p {
+	margin-left: $indent
+}
+
+.tablenotes {
+	margin-top: $spacing;
+	font-size: smaller
+}
+
+.tablenote > .marker {
+	display: block;
+    position: absolute;
+}
+.tablenote > p {
 	margin-left: $indent
 }

@@ -1029,6 +1029,9 @@
 		<xsl:apply-templates select="*[not(self::html:tfoot)]" />
 		<xsl:apply-templates select="html:tfoot" />
 	</xsl:element>
+	<xsl:if test="empty(ancestor::html:table)">
+		<xsl:call-template name="table-notes" />
+	</xsl:if>
 </xsl:template>
 
 <xsl:template match="html:colgroup">
@@ -1160,9 +1163,9 @@
 
 <!-- inline -->
 
-<xsl:template match="quotedText">
+<xsl:template match="quotedText | embeddedText">
 	<q>
-		<xsl:apply-templates select="@*" />
+		<xsl:call-template name="attrs" />
 		<xsl:value-of select="@startQuote" />
 		<xsl:apply-templates />
 		<xsl:value-of select="@endQuote" />
@@ -1171,7 +1174,7 @@
 
 <xsl:template match="noteRef">
 	<xsl:choose>
-		<xsl:when test="@uk:name = 'commentary' or tokenize(@class, ' ') = 'commentary'">
+		<xsl:when test="@uk:name = 'commentary' or tokenize(@class) = 'commentary'">
 			<xsl:variable name="test" select="key('id', substring(@href, 2))" />
 			<xsl:if test="$test[not(self::note)]">
 				<xsl:message terminate="yes">
@@ -1291,14 +1294,20 @@
 	</xsl:attribute>
 </xsl:template>
 
-<xsl:template match="@uk:*">	<!-- ldapp uses ukl: prefix for uk-akn namespace -->
-	<xsl:attribute name="data-uk-{ local-name() }">
+<xsl:template match="@uk:*">
+	<xsl:attribute name="data-uk-{ lower-case(local-name()) }">
+		<xsl:value-of select="." />
+	</xsl:attribute>
+</xsl:template>
+
+<xsl:template match="@ukl:*">
+	<xsl:attribute name="data-ukl-{ lower-case(local-name()) }">
 		<xsl:value-of select="." />
 	</xsl:attribute>
 </xsl:template>
 
 <xsl:template match="@*">
-	<xsl:attribute name="data-{ translate(name(), ':', '-') }">
+	<xsl:attribute name="data-{ translate(lower-case(name()), ':', '-') }">
 		<xsl:value-of select="." />
 	</xsl:attribute>
 </xsl:template>
@@ -1307,7 +1316,7 @@
 <!-- footnotes -->
 
 <xsl:template name="footnotes">
-	<xsl:variable name="footnotes" as="element(authorialNote)*" select="//authorialNote[@class='footnote']" />
+	<xsl:variable name="footnotes" as="element(authorialNote)*" select="//authorialNote[tokenize(@class)='footnote']" />
 	<xsl:if test="exists($footnotes)">
 		<footer class="footnotes">
 			<xsl:apply-templates select="$footnotes" mode="footnote" />
@@ -1315,38 +1324,77 @@
 	</xsl:if>
 </xsl:template>
 
-<xsl:template match="authorialNote[@class='footnote']">
-	<xsl:variable name="id" as="xs:string" select="if (@id) then @id else generate-id()" />
+<xsl:template name="table-notes">
+	<xsl:variable name="table-notes" as="element(authorialNote)*" select="descendant::authorialNote[tokenize(@class)='tablenote']" />
+	<xsl:if test="exists($table-notes)">
+		<div class="tablenotes">
+			<xsl:apply-templates select="$table-notes" mode="footnote" />
+		</div>
+	</xsl:if>
+</xsl:template>
+
+<xsl:function name="local:make-footnote-marker" as="xs:string">
+	<xsl:param name="footnote" as="element(authorialNote)" />
+	<xsl:variable name="number" as="xs:integer" select="count($footnote/preceding::authorialNote[@class=$footnote/@class]) + 1" />
+	<xsl:choose>
+		<xsl:when test="$footnote/@class = 'tablenote'">
+			<xsl:number value="$number" format="a" />
+		</xsl:when>
+		<xsl:otherwise>
+			<xsl:sequence select="string($number)" />
+		</xsl:otherwise>
+	</xsl:choose>
+</xsl:function>
+
+<xsl:template match="authorialNote[tokenize(@class)=('footnote','tablenote')]">
+	<xsl:variable name="id" as="xs:string" select="if (exists(@eId)) then @eId else generate-id(.)" />
 	<a class="fnRef" id="ref-{ $id }" href="#{ $id }">
 		<xsl:choose>
 			<xsl:when test="exists(@marker)">
 				<xsl:value-of select="@marker" />
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:value-of select="position()" />
+				<xsl:value-of select="local:make-footnote-marker(.)" />
 			</xsl:otherwise>
 		</xsl:choose>
 	</a>
 </xsl:template>
 
 <xsl:template match="authorialNote" mode="footnote">
-	<xsl:variable name="id" as="xs:string" select="if (@id) then @id else generate-id()" />
+	<xsl:variable name="id" as="xs:string" select="if (exists(@eId)) then @eId else generate-id(.)" />
 	<div>
 		<xsl:call-template name="attrs" />
-		<a class="marker" id="{ $id }" href="#ref-{ $id }">
+		<xsl:if test="empty(@eId)">
+			<xsl:attribute name="id">
+				<xsl:value-of select="$id" />
+			</xsl:attribute>
+		</xsl:if>
+		<a class="marker" href="#ref-{ $id }">
 			<xsl:choose>
 				<xsl:when test="exists(@marker)">
 					<xsl:value-of select="@marker" />
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="position()" />
+					<xsl:value-of select="local:make-footnote-marker(.)" />
 				</xsl:otherwise>
 			</xsl:choose>
 		</a>
-		<xsl:apply-templates />
 		<xsl:apply-templates>
 			<xsl:with-param name="effective-document-category" select="$doc-category" tunnel="yes" />
 		</xsl:apply-templates>
+	</div>
+</xsl:template>
+
+<!-- orphan table notes (table notes with no references) -->
+<xsl:template match="authorialNote[@placement='inline']">
+	<div>
+		<xsl:call-template name="attrs" />
+		<xsl:if test="exists(@marker)">
+			<span class="marker">
+				<xsl:value-of select="@marker" />
+			</span>
+		</xsl:if>
+		<xsl:apply-templates />
 	</div>
 </xsl:template>
 

@@ -1048,7 +1048,17 @@
 	</xsl:element>
 </xsl:template>
 
-<xsl:template match="html:th | html:td | html:col">
+<xsl:template match="html:col">
+	<xsl:element name="{ local-name() }">
+		<xsl:apply-templates select="@* except @width" />
+		<xsl:if test="exists(@width)">
+			<xsl:attribute name="style" select="concat('width:', @width)" />
+		</xsl:if>
+		<xsl:apply-templates />
+	</xsl:element>
+</xsl:template>
+
+<xsl:template match="html:th | html:td">
 	<xsl:element name="{ local-name() }">
 		<xsl:apply-templates select="@* except (@width, @height, @align, @valign, @fo:*)" />
 		<xsl:if test="exists(@width) or exists(@height) or exists(@align) or exists(@valign) or exists(@fo:*)">

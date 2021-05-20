@@ -824,22 +824,23 @@
 	</p>
 </xsl:template>
 
-<xsl:template match="block[@name='figure']">
-	<figure>
-		<xsl:apply-templates select="@*[name() != 'name']" />
-		<xsl:apply-templates />
-	</figure>
-</xsl:template>
 <xsl:template match="tblock[@class='figure']">
 	<figure>
-		<xsl:apply-templates select="@*[name() != 'class']" />
-		<xsl:apply-templates />
+		<xsl:apply-templates select="@* except @class" />
+		<xsl:if test="exists(num) or exists(heading) or exists(subheading)">
+			<figcaption>
+				<xsl:apply-templates select="num | heading | subheading" />
+			</figcaption>
+		</xsl:if>
+		<xsl:apply-templates select="* except (num, heading, subheading)" />
 	</figure>
 </xsl:template>
-<xsl:template match="tblock[@class='figure']/heading">
-	<figcaption>
-		<xsl:apply-templates select="@*|node()" />
-	</figcaption>
+
+<xsl:template match="tblock[@class='figure']/num | tblock[@class='figure']/heading | tblock[@class='figure']/subheading">
+	<div>
+		<xsl:call-template name="attrs" />
+		<xsl:apply-templates />
+	</div>
 </xsl:template>
 
 <xsl:template match="block | container | tblock | blockContainer | formula | longTitle | authorialNote">
@@ -1007,6 +1008,13 @@
 
 
 <!-- foreign: tables and math -->
+
+<xsl:template match="tblock[@class='table']/num | tblock[@class='table']/heading | tblock[@class='table']/subheading">
+	<div>
+		<xsl:call-template name="attrs" />
+		<xsl:apply-templates />
+	</div>
+</xsl:template>
 
 <xsl:template match="foreign">
 	<xsl:apply-templates />

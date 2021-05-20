@@ -88,6 +88,16 @@ q:before, q:after { content: '' }
 
 /* images */
 
+figure {
+	margin-top: $spacing;
+}
+figcaption {
+	text-align: center;
+	> div { margin-top: $spacing }
+}
+
+figure > p { text-align: center }
+
 .image.centre {
 	text-align: center
 }

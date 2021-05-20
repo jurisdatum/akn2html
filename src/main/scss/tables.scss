@@ -2,14 +2,16 @@
 @import 'globals.scss';
 
 .tblock.table {
+	margin-top: $spacing;
 	> .num {
-		display: block;
-		// text-align: center
-		text-align: left;	// at least for 
-		font-weight: bold;
+		margin-top: $spacing;
+		// display: block;
+		text-align: center;
+		font-weight: bold
 	}
 	> .heading {
-		display: block;
+		margin-top: $spacing;
+		// display: block;
 		text-align: center
 	}
 }

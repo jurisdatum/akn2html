@@ -44,7 +44,7 @@ body {
 // 	}
 // }
 
-.subject {
+.subject.block {
 	margin-top: $spacing;
 	margin-bottom: $spacing;	// so spacing for subsubjects is uniform, even though smaller font
 	text-align: center;
@@ -53,7 +53,7 @@ body {
 	text-transform: uppercase
 }
 
-.subsubject, .subject > .subtitle {
+.subsubject {
 	margin-top: $spacing;
 	text-align: center;
 	font-size: $uk-font-size * 1.25;
